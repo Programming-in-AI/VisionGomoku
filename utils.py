@@ -24,7 +24,7 @@ white = (255, 255, 255)
 red = (255, 0, 0)
 green = (0, 200, 0)
 
-fps = 60
+fps = 60000000
 fps_clock = pygame.time.Clock()
 
 
@@ -38,6 +38,8 @@ class Omok(object):
         self.set_coords()
         self.set_image_font()
         self.is_show = True
+        self.black_win_time = 0
+        self.white_win_time = 0
 
 
     def init_game(self):
@@ -50,26 +52,25 @@ class Omok(object):
         self.id = 1
         self.is_gameover = False
 
-
-    def run_game(self, omok, menu):
+    @staticmethod
+    def run_game(omok, menu):
         omok.init_game()
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: # close window
                     menu.terminate()
                     pygame.quit()
-                elif event.type == pygame.MOUSEBUTTONUP: # mouse clicked
-                    print(f'coord : {event.pos}')
-                    if not omok.check_board(event.pos): # did it click board?
-                         if menu.check_rect(event.pos, omok):
-                             omok.init_game()
 
-            if omok.is_gameover:
-                return
+                elif event.type == pygame.MOUSEBUTTONUP:  # mouse clicked
+                    print(f'coord: {event.pos}')
+                    if not omok.check_board(event.pos): # 1. did it click board? 2. check that the game is over or not
+                        omok.init_game()  # if anybody wins, initialize game
+
+            if omok.is_gameover:  # if game is over break while loop
+                break
 
             pygame.display.update()
             fps_clock.tick(fps)
-
 
     def set_image_font(self):
         white_img = pygame.image.load('./image/white.png')
@@ -80,8 +81,6 @@ class Omok(object):
         # self.last_b_img = pygame.image.load('./image/black_last.png')
         self.board_img = pygame.image.load('./image/table.jpg')
         self.font = pygame.font.Font("freesansbold.ttf", 14)
-
-
 
     def init_board(self):
         for y in range(board_size):
@@ -131,7 +130,8 @@ class Omok(object):
                 return coord
         return None
 
-    def get_point(self, coord):
+    @staticmethod
+    def get_point(coord):
         x, y = coord
         x = (x - 25) // grid_size
         y = (y - 25) // grid_size
@@ -142,7 +142,7 @@ class Omok(object):
         if not coord:
             return False
         x, y = self.get_point(coord)
-        if self.board[y][x] != empty: # if already stone exists => return True
+        if self.board[y][x] != empty: # stone already exists => return True
             return True
 
         self.coords.append(coord)
@@ -157,20 +157,26 @@ class Omok(object):
         if self.id > board_size * board_size:
             self.show_winner_msg(stone)
             return True
-        elif 5 <= self.rule.is_gameover(x, y, stone):
+        elif 5 <= self.rule.is_gameover(x, y, stone):  # checking how many times win
+            if stone == 1:  # black
+                self.black_win_time += 1
+            else:  # white
+                self.white_win_time += 1
             self.show_winner_msg(stone)
             return True
         return False
 
     def show_winner_msg(self, stone):
-        for i in range(3):
+        if self.black_win_time < 2 and self.white_win_time < 2:
             self.menu.show_msg(stone)
             pygame.display.update()
-            pygame.time.delay(200)
-            self.menu.show_msg(empty)
+            pygame.time.delay(2000)
+        else:
+            self.menu.show_msg(stone, True)
             pygame.display.update()
-            pygame.time.delay(200)
-        self.menu.show_msg(stone)
+            pygame.time.delay(2000)
+
+
 
     def draw_stone(self, coord, stone, increase):
         x, y = self.get_point(coord)
