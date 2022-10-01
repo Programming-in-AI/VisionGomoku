@@ -10,7 +10,7 @@ if __name__ == '__main__':
     pygame.display.set_caption("Omok game")
 
     # make instance
-    omok = utils.Omok(surface)
+    omok = utils.Gomoku(surface)
     menu = Menu.Menu(surface)
 
     while True:

@@ -1,6 +1,7 @@
 import pygame
 import Menu
 import Rule
+import gomokuAI as AI
 
 # default value
 window_width = 470
@@ -28,7 +29,7 @@ fps = 60
 fps_clock = pygame.time.Clock()
 
 
-class Omok(object):
+class Gomoku(object):
     def __init__(self, surface):
         self.board = [[0 for i in range(board_size)] for j in range(board_size)]
         self.menu = Menu.Menu(surface)
@@ -38,6 +39,7 @@ class Omok(object):
         self.set_coords()
         self.set_image_font()
         self.is_show = True
+        self.move_count = 0
 
 
     def init_game(self):
@@ -53,16 +55,25 @@ class Omok(object):
 
     def run_game(self, omok, menu):
         omok.init_game()
+        # black plays as AI
+        playerBlack = AI.AI(omok.board, black_stone)
         while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT: # close window
-                    menu.terminate()
-                    pygame.quit()
-                elif event.type == pygame.MOUSEBUTTONUP: # mouse clicked
-                    print(f'coord : {event.pos}')
-                    if not omok.check_board(event.pos): # did it click board?
-                         if menu.check_rect(event.pos, omok):
-                             omok.init_game()
+            if self.turn == black_stone:
+                if not self.is_gameover:
+                    # playerBlack.play()
+                    playerBlack.play()
+                    self.turn = 3 - self.turn
+            else:
+                
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT: # close window
+                        menu.terminate()
+                        pygame.quit()
+                    elif event.type == pygame.MOUSEBUTTONUP: # mouse clicked
+                        print(f'coord : {event.pos}')
+                        if not omok.check_board(event.pos): # did it click board?
+                            if menu.check_rect(event.pos, omok):
+                                omok.init_game()
 
             if omok.is_gameover:
                 return
@@ -81,12 +92,13 @@ class Omok(object):
         self.board_img = pygame.image.load('./image/table.jpg')
         self.font = pygame.font.Font("freesansbold.ttf", 14)
 
-
-
     def init_board(self):
         for y in range(board_size):
             for x in range(board_size):
                 self.board[y][x] = 0
+        # center = board_size // 2
+        # center_coord = center * grid_size + 25
+        # self.draw_stone((center_coord, center_coord), black_stone, 1)
 
     def draw_board(self):
         self.surface.blit(self.board_img, (0, 0))
@@ -174,9 +186,21 @@ class Omok(object):
 
     def draw_stone(self, coord, stone, increase):
         x, y = self.get_point(coord)
+        # if self.is_valid_move(x, y, self.move_count + 1, stone) or stone == white_stone or self.move_count > 3:
         self.board[y][x] = stone
         self.hide_numbers()
         #self.show_numbers()
         self.id += increase
         self.turn = 3 - self.turn
+        self.move_count += 1
+        print("Number of moves: ", self.move_count)
+        print("ID: ", self.id)
 
+    def is_valid_move(self, x, y, move_count, stone):
+        center = board_size // 2
+        if move_count == 1 and x == center and y == center and stone == black_stone:
+            return True
+        elif move_count == 3 and (center - 2 <= x <= center + 2) and (center - 2 <= y <= center + 2) and stone == black_stone:
+            return True
+        else:
+            return False
