@@ -10,10 +10,12 @@ if __name__ == '__main__':
     pygame.display.set_caption("Omok game")
 
     # make instance
-    omok = utils.Gomoku(surface)
+    omok = utils.Omok(surface)
     menu = Menu.Menu(surface)
 
     while True:
         omok.run_game(omok, menu)
-        menu.is_continue(omok)
+        if menu.game_over(omok):
+            pygame.quit()
+            break
 

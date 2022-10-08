@@ -1,7 +1,7 @@
 import pygame
 import Menu
 import Rule
-import gomokuAI as AI
+import gomokuAI
 
 # default value
 window_width = 470
@@ -25,11 +25,11 @@ white = (255, 255, 255)
 red = (255, 0, 0)
 green = (0, 200, 0)
 
-fps = 60
+fps = 60000000
 fps_clock = pygame.time.Clock()
 
 
-class Gomoku(object):
+class Omok(object):
     def __init__(self, surface):
         self.board = [[0 for i in range(board_size)] for j in range(board_size)]
         self.menu = Menu.Menu(surface)
@@ -39,7 +39,8 @@ class Gomoku(object):
         self.set_coords()
         self.set_image_font()
         self.is_show = True
-        self.move_count = 0
+        self.black_win_time = 0
+        self.white_win_time = 0
 
 
     def init_game(self):
@@ -52,35 +53,33 @@ class Gomoku(object):
         self.id = 1
         self.is_gameover = False
 
-
-    def run_game(self, omok, menu):
+    @staticmethod
+    def run_game(omok, menu):
         omok.init_game()
-        # black plays as AI
-        playerBlack = AI.AI(omok.board, black_stone)
+        # Initialize AI
+        ai = gomokuAI.gomokuAI(omok, omok.board, 5)
         while True:
-            if self.turn == black_stone:
-                if not self.is_gameover:
-                    # playerBlack.play()
-                    playerBlack.play()
-                    self.turn = 3 - self.turn
-            else:
-                
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT: # close window
-                        menu.terminate()
-                        pygame.quit()
-                    elif event.type == pygame.MOUSEBUTTONUP: # mouse clicked
-                        print(f'coord : {event.pos}')
-                        if not omok.check_board(event.pos): # did it click board?
-                            if menu.check_rect(event.pos, omok):
-                                omok.init_game()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT: # close window
+                    menu.terminate()
+                    pygame.quit()
 
-            if omok.is_gameover:
-                return
+                # black plays as an AI
+                elif omok.turn == black_stone and not omok.is_gameover:
+                    best_move = ai.get_best_move()
+                    ai.make_move(best_move)
+                    omok.turn = white_stone
+
+                elif event.type == pygame.MOUSEBUTTONUP:  # mouse clicked
+                    print(f'coord: {event.pos}')
+                    if not omok.check_board(event.pos): # 1. did it click board? 2. check that the game is over or not
+                        omok.init_game()  # if anybody wins, initialize game
+
+            if omok.is_gameover:  # if game is over break while loop
+                break
 
             pygame.display.update()
             fps_clock.tick(fps)
-
 
     def set_image_font(self):
         white_img = pygame.image.load('./image/white.png')
@@ -96,9 +95,6 @@ class Gomoku(object):
         for y in range(board_size):
             for x in range(board_size):
                 self.board[y][x] = 0
-        # center = board_size // 2
-        # center_coord = center * grid_size + 25
-        # self.draw_stone((center_coord, center_coord), black_stone, 1)
 
     def draw_board(self):
         self.surface.blit(self.board_img, (0, 0))
@@ -143,7 +139,8 @@ class Gomoku(object):
                 return coord
         return None
 
-    def get_point(self, coord):
+    @staticmethod
+    def get_point(coord):
         x, y = coord
         x = (x - 25) // grid_size
         y = (y - 25) // grid_size
@@ -154,7 +151,7 @@ class Gomoku(object):
         if not coord:
             return False
         x, y = self.get_point(coord)
-        if self.board[y][x] != empty: # if already stone exists => return True
+        if self.board[y][x] != empty: # stone already exists => return True
             return True
 
         self.coords.append(coord)
@@ -169,38 +166,32 @@ class Gomoku(object):
         if self.id > board_size * board_size:
             self.show_winner_msg(stone)
             return True
-        elif 5 <= self.rule.is_gameover(x, y, stone):
+        elif 5 <= self.rule.is_gameover(x, y, stone):  # checking how many times win
+            if stone == 1:  # black
+                self.black_win_time += 1
+            else:  # white
+                self.white_win_time += 1
             self.show_winner_msg(stone)
             return True
         return False
 
     def show_winner_msg(self, stone):
-        for i in range(3):
+        if self.black_win_time < 2 and self.white_win_time < 2:
             self.menu.show_msg(stone)
             pygame.display.update()
-            pygame.time.delay(200)
-            self.menu.show_msg(empty)
+            pygame.time.delay(2000)
+        else:
+            self.menu.show_msg(stone, True)
             pygame.display.update()
-            pygame.time.delay(200)
-        self.menu.show_msg(stone)
+            pygame.time.delay(2000)
+
+
 
     def draw_stone(self, coord, stone, increase):
         x, y = self.get_point(coord)
-        # if self.is_valid_move(x, y, self.move_count + 1, stone) or stone == white_stone or self.move_count > 3:
         self.board[y][x] = stone
         self.hide_numbers()
         #self.show_numbers()
         self.id += increase
         self.turn = 3 - self.turn
-        self.move_count += 1
-        print("Number of moves: ", self.move_count)
-        print("ID: ", self.id)
 
-    def is_valid_move(self, x, y, move_count, stone):
-        center = board_size // 2
-        if move_count == 1 and x == center and y == center and stone == black_stone:
-            return True
-        elif move_count == 3 and (center - 2 <= x <= center + 2) and (center - 2 <= y <= center + 2) and stone == black_stone:
-            return True
-        else:
-            return False
