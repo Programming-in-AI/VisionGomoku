@@ -1,0 +1,60 @@
+1. KATAGOMO21.R 2084
+    wins: 115+116, losses: 14+15, draws: 3+1
+    timeouts: 0, errors: 0, total games: 264
+    time/game: 630s, time/turn: 26263ms, move/game: 24
+
+2. EMBRYO21.R 2018
+    wins: 111+106, losses: 19+19, draws: 2+7
+    timeouts: 0, errors: 0, total games: 264
+    time/game: 336s, time/turn: 13159ms, move/game: 26
+
+3. RAPFI21 1944
+    wins: 104+98, losses: 24+32, draws: 4+2
+    timeouts: 0, errors: 0, total games: 264
+    time/game: 351s, time/turn: 14017ms, move/game: 25
+
+4. YIXIN18 1936
+    wins: 97+101, losses: 27+29, draws: 8+2
+    timeouts: 0, errors: 0, total games: 264
+    time/game: 320s, time/turn: 12197ms, move/game: 26
+
+5. PENTAZEN21.15 1882
+    wins: 96+91, losses: 34+33, draws: 2+8
+    timeouts: 0, errors: 0, total games: 264
+    time/game: 566s, time/turn: 21870ms, move/game: 26
+
+6. RENJUSOLVER.R 1520
+    wins: 55+56, losses: 71+73, draws: 6+3
+    timeouts: 0, errors: 0, total games: 264
+    time/game: 222s, time/turn: 9382ms, move/game: 24
+
+7. SLOWRENJU20 1519
+    wins: 51+58, losses: 75+70, draws: 6+4
+    timeouts: 0, errors: 0, total games: 264
+    time/game: 476s, time/turn: 20561ms, move/game: 23
+
+8. WHOSE19 1492
+    wins: 48+59, losses: 81+73, draws: 3+0
+    timeouts: 0, errors: 0, total games: 264
+    time/game: 364s, time/turn: 16074ms, move/game: 23
+
+9. GOFIVE 1384
+    wins: 42+41, losses: 89+89, draws: 1+2
+    timeouts: 0, errors: 0, total games: 264
+    time/game: 487s, time/turn: 26093ms, move/game: 19
+
+10. CARBON17 1207
+    wins: 23+22, losses: 108+105, draws: 1+5
+    timeouts: 0, errors: 0, total games: 264
+    time/game: 466s, time/turn: 23522ms, move/game: 20
+
+11. XL 1140
+    wins: 17+19, losses: 115+113, draws: 0+0
+    timeouts: 0, errors: 6, total games: 264
+    time/game: 290s, time/turn: 15892ms, move/game: 18
+
+12. PELA17 1074
+    wins: 6+13, losses: 123+114, draws: 3+5
+    timeouts: 0, errors: 0, total games: 264
+    time/game: 615s, time/turn: 33664ms, move/game: 18
+

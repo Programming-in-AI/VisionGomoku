@@ -1,6 +1,7 @@
 import pygame
 import Menu
 import Rule
+import random
 
 # default value
 window_width = 470
@@ -48,12 +49,15 @@ class Omok(object):
         self.menu.show_msg(empty)
         self.init_board()
         self.coords = []
-        self.redos = []
         self.id = 1
         self.is_gameover = False
 
     @staticmethod
     def run_game(omok, menu):
+        # randomly select who is black
+        you_first = random.randint(1,2)  # if you first 1, black is you, vice versa
+
+
         omok.init_game()
         while True:
             for event in pygame.event.get():
@@ -77,8 +81,6 @@ class Omok(object):
         self.white_img = pygame.transform.scale(white_img, (grid_size, grid_size))
         black_img = pygame.image.load('./image/black.png')
         self.black_img = pygame.transform.scale(black_img, (grid_size, grid_size))
-        # self.last_w_img = pygame.image.load('./image/white_last.png')
-        # self.last_b_img = pygame.image.load('./image/black_last.png')
         self.board_img = pygame.image.load('./image/table.jpg')
         self.font = pygame.font.Font("freesansbold.ttf", 14)
 
@@ -94,27 +96,10 @@ class Omok(object):
         img = [self.black_img, self.white_img]
         self.surface.blit(img[img_index], (x-grid_size/2, y-grid_size/2))
 
-    def show_number(self, x, y, stone, number):
-        colors = [white, black, red, red]
-        color = colors[stone]
-        self.make_text(self.font, str(number), color, x + 15, y + 15, 'center')
-
     def hide_numbers(self):
         for i in range(len(self.coords)):
             x, y = self.coords[i]
             self.draw_image(i % 2, x, y)
-        # if self.coords:
-        #     x, y = self.coords[-1]
-        #     self.draw_image(i % 2 + 2, x, y)
-
-    def show_numbers(self):
-        for i in range(len(self.coords)):
-            x, y = self.coords[i]
-            self.show_number(x, y, i % 2, i + 1)
-        if self.coords:
-            x, y = self.coords[-1]
-            self.draw_image(i % 2, x, y)
-            self.show_number(x, y, i % 2 + 2, i + 1)
 
     def set_coords(self):
         for y in range(board_size):
@@ -124,9 +109,9 @@ class Omok(object):
     def get_coord(self, pos):
         for coord in self.pixel_coords:
             x, y = coord
-            e = 10 # error value (becuz board is made by hands we need to compensate the pixel value)
+            e = 10 # error value (becuz board is made by the hand, we need to compensate the pixel value)
             rect = pygame.Rect(x-e, y-e, grid_size, grid_size)
-            if rect.collidepoint(pos):
+            if rect.collidepoint(pos):  # if included in the rectangular then return coord
                 return coord
         return None
 
@@ -176,13 +161,10 @@ class Omok(object):
             pygame.display.update()
             pygame.time.delay(2000)
 
-
-
     def draw_stone(self, coord, stone, increase):
         x, y = self.get_point(coord)
         self.board[y][x] = stone
         self.hide_numbers()
-        #self.show_numbers()
         self.id += increase
         self.turn = 3 - self.turn
 

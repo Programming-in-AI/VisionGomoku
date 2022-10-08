@@ -1,0 +1,60 @@
+1. EMBRYO21.F 1877
+    wins: 107+107, losses: 25+25, draws: 0+0
+    timeouts: 0, errors: 1, total games: 264
+    time/game: 297s, time/turn: 11975ms, move/game: 25
+
+2. BARBAKAN 1816
+    wins: 96+102, losses: 36+30, draws: 0+0
+    timeouts: 0, errors: 0, total games: 264
+    time/game: 641s, time/turn: 25455ms, move/game: 25
+
+3. KATAGOMO21.F 1765
+    wins: 91+92, losses: 41+40, draws: 0+0
+    timeouts: 0, errors: 0, total games: 264
+    time/game: 653s, time/turn: 25546ms, move/game: 26
+
+4. RAPFI21 1765
+    wins: 91+92, losses: 41+40, draws: 0+0
+    timeouts: 0, errors: 0, total games: 264
+    time/game: 319s, time/turn: 12437ms, move/game: 26
+
+5. YIXIN18 1691
+    wins: 78+82, losses: 54+50, draws: 0+0
+    timeouts: 0, errors: 0, total games: 264
+    time/game: 360s, time/turn: 14165ms, move/game: 25
+
+6. ALPHAGOMOKU.MK21 1688
+    wins: 77+82, losses: 55+50, draws: 0+0
+    timeouts: 0, errors: 0, total games: 264
+    time/game: 402s, time/turn: 15031ms, move/game: 27
+
+7. PENTAZEN21.20 1669
+    wins: 71+82, losses: 61+50, draws: 0+0
+    timeouts: 0, errors: 0, total games: 264
+    time/game: 612s, time/turn: 22814ms, move/game: 27
+
+8. XOXO21.F 1470
+    wins: 40+50, losses: 92+82, draws: 0+0
+    timeouts: 0, errors: 0, total games: 264
+    time/game: 358s, time/turn: 15105ms, move/game: 24
+
+9. STARDUST 1425
+    wins: 34+43, losses: 98+89, draws: 0+0
+    timeouts: 0, errors: 0, total games: 264
+    time/game: 285s, time/turn: 15004ms, move/game: 19
+
+10. RENJUSOLVER.F 1374
+    wins: 36+27, losses: 96+105, draws: 0+0
+    timeouts: 0, errors: 0, total games: 264
+    time/game: 223s, time/turn: 10070ms, move/game: 22
+
+11. WINE18 1351
+    wins: 32+25, losses: 100+107, draws: 0+0
+    timeouts: 0, errors: 0, total games: 264
+    time/game: 486s, time/turn: 23794ms, move/game: 20
+
+12. WHOSE19 1310
+    wins: 25+22, losses: 107+110, draws: 0+0
+    timeouts: 0, errors: 0, total games: 264
+    time/game: 251s, time/turn: 10620ms, move/game: 24
+
