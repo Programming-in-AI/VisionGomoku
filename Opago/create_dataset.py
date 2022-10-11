@@ -9,11 +9,19 @@ Dataset from https://gomocup.org/results/
 
 game_rule = 'Renju' # Freestyle, Fastgame, Standard, Renju
 base_path = os.getcwd()
-
+data_path = os.path.join(os.getcwd() , 'pre_dataset')
 output_path = os.path.join(base_path, 'dataset')
+
 os.makedirs(output_path, exist_ok=True)
 
-file_list = glob(os.path.join(base_path+'/pre_dataset', '%s*/*.psq' % (game_rule, )))
+folder_list = os.listdir(data_path)  # Renju 1,2,3
+
+file_list=[]
+for tmp in (folder_list):
+    tmp = os.path.join(data_path, tmp)
+    file_list.extend(glob(os.path.join(tmp, '*.psq')))
+
+
 
 for index, file_path in enumerate(tqdm(file_list)):
     with open(file_path, 'r') as f:

@@ -9,7 +9,7 @@ def train_net(net, traindata, test_loader, optimizer, epoch, device, loss_fn):
 
     # model save path
     os.makedirs('./models/', exist_ok=True)
-
+    val_acc.append(eval_net(net, test_loader, device))
     for epoch in range(epoch):
         running_loss = 0.0
         # train mode
@@ -49,7 +49,7 @@ def train_net(net, traindata, test_loader, optimizer, epoch, device, loss_fn):
         train_losses.append(running_loss / i)
 
         # train_dataset acc
-        train_acc.append(n_acc / (total * batch_size))  # 퍼센트
+        train_acc.append(n_acc / (total * data.size(2) * data.size(3)))  # 퍼센트
 
         # valid_dataset acc
         val_acc.append(eval_net(net, test_loader, device))
@@ -67,8 +67,9 @@ def eval_net(net, data_loader, device):
     # Dropout or BatchNorm 没了
     net.eval()
     ys = []
-    ypreds = []
+    total = 0
     n_acc = 0
+
     for x, y in data_loader:
         # send to device
         x = x.to(device)  # x.size() = (batch_size, 1, 15, 15)
@@ -76,10 +77,11 @@ def eval_net(net, data_loader, device):
 
         with torch.no_grad():
             y_pred = net(x)  # net(x).size = (batch_size, 1, 15, 15)
-
+        batch_size = x.size(0)
+        total += batch_size
         n_acc += (y_pred == y).float().sum().item() # 같으면 1 틀리면 0 다 합쳤을때
 
-    acc = n_acc/ (x.size(0) * x.size(2) * x.size(3))
+    acc = n_acc/ (total * x.size(2) * x.size(3))
 
     return acc
 
