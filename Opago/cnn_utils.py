@@ -14,19 +14,17 @@ def train_net(net, traindata, test_loader, optimizer, epoch, device, loss_fn):
         running_loss = 0.0
         # train mode
         net.train()
-
         total = 0
         n_acc = 0
 
-        for i, (x, y) in tqdm.tqdm(enumerate(traindata), total=len(traindata)):  # data 안에는 batchsize 만큼의 data 가 들어있고(ex 32개) 그 32개가 net안에 들어가는 거다! 그리고 정확도는 그 32개를 평균치
-            # print('i:', i)
-            # print("data:",x)
-            # print("data size:", x.size(0))
+        # 이미 x는 batch_size만큼 포함중
+        for i, (x, y) in tqdm.tqdm(enumerate(traindata), total=len(traindata)):  # x 안에는 batchsize 만큼의 data 가 들어있고(ex 32개) 그 32개가 net안에 들어가는 거다! 그리고 정확도는 그 32개를 평균치
+
             net = net.to(device)
             data = x.to(device)
-            label = y.to(device)
+            label = y.to(device)  # label.size = (batch_size, 1, 15, 15)
 
-            h = net(data)
+            h = net(data)  # h.size = (batch_size, 1, 15, 15) throughout a sigmoid =>
 
             loss = loss_fn(h, label)
             optimizer.zero_grad()
@@ -47,11 +45,11 @@ def train_net(net, traindata, test_loader, optimizer, epoch, device, loss_fn):
            #  print('label len:',len(label))
            #  # print('y_pred[0] len:',len(y_pred[0]))
            #  print('label[0] len:',len(label[0]))
-            n_acc += (label == h).float().sum().item()
+            n_acc += (label == h).float().sum().item()  # 같으면 1 틀리면 0 다 합쳤을때
         train_losses.append(running_loss / i)
 
         # train_dataset acc
-        train_acc.append(n_acc / total)
+        train_acc.append(n_acc / (total * batch_size))  # 퍼센트
 
         # valid_dataset acc
         val_acc.append(eval_net(net, test_loader, device))
@@ -70,22 +68,20 @@ def eval_net(net, data_loader, device):
     net.eval()
     ys = []
     ypreds = []
+    n_acc = 0
     for x, y in data_loader:
         # send to device
-        x = x.to(device)
+        x = x.to(device)  # x.size() = (batch_size, 1, 15, 15)
         y = y.to(device)
 
         with torch.no_grad():
-            _, y_pred = net(x).max(1)
-        ys.append(y)
-        ypreds.append(y_pred)
+            y_pred = net(x)  # net(x).size = (batch_size, 1, 15, 15)
 
+        n_acc += (y_pred == y).float().sum().item() # 같으면 1 틀리면 0 다 합쳤을때
 
-    ys = torch.cat(ys)
-    ypreds = torch.cat(ypreds)
+    acc = n_acc/ (x.size(0) * x.size(2) * x.size(3))
 
-    acc = (ys == ypreds).float().sum() / len(ys)
-    return acc.item()
+    return acc
 
 
 

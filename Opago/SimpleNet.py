@@ -35,7 +35,7 @@ class SimpleNet(nn.Module):
 
         x = self.conv6(x)  # batch_size x 1 x 15 x 15
 
-        x = x.view(-1, 225)  # batch_size x 225
-        x = self.sg(x)  # batch_size x 225
+        x = x.view(-1, 15 * 15)  # batch_size x 225
+        x = self.sg(x)  # batch_size x 225, which one is very high?
 
         return x
