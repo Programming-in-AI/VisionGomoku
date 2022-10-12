@@ -1,7 +1,7 @@
 import pygame
 import Menu
 import Rule
-import gomokuAI
+import minimax
 
 # default value
 window_width = 470
@@ -57,7 +57,7 @@ class Omok(object):
     def run_game(omok, menu):
         omok.init_game()
         # Initialize AI
-        ai = gomokuAI.gomokuAI(omok, omok.board, 5)
+        ai = minimax.Minimax(omok, omok.board, 5)
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: # close window
