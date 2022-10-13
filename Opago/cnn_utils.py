@@ -25,7 +25,6 @@ def train_net(net, traindata, test_loader, optimizer, epoch, device, loss_fn):
             label = y.to(device)  # label.size = (batch_size, 1, 15, 15)
 
             h = net(data)  # h.size = (batch_size, 1, 15, 15) throughout a sigmoid =>
-
             loss = loss_fn(h, label)
             optimizer.zero_grad()
             loss.backward()

@@ -13,27 +13,34 @@ class SimpleNet(nn.Module):
         self.conv6 = nn.Conv2d(32, 1, 7, padding='same')
         self.sg = nn.Sigmoid()
         self.relu = nn.ReLU()
-
+        self.dropout = nn.Dropout(0.2)
+        self.Ln = nn.Linear(256, 225)
 
     def forward(self, x):
         # x = x  # batch_size x 1 x 15 x 15
 
         x = self.conv1(x)  # batch_size x 32 x 15 x 15
         x = self.relu(x)
+        x = self.dropout(x)
 
         x = self.conv2(x)  # batch_size x 64 x 15 x 15
         x = self.relu(x)
+        x = self.dropout(x)
 
         x = self.conv3(x)  # bach_size x 128 x 15 x 15
         x = self.relu(x)
+        x = self.dropout(x)
 
         x = self.conv4(x)  # batch_size x 64 x 15 x 15
         x = self.relu(x)
+        x = self.dropout(x)
 
         x = self.conv5(x)  # batch_size x 32 x 15 x 15
         x = self.relu(x)
+        x = self.dropout(x)
 
         x = self.conv6(x)  # batch_size x 1 x 15 x 15
+        x = self.dropout(x)
 
         x = x.view(-1, 15 * 15)  # batch_size x 225
         x = self.sg(x)  # batch_size x 225, which one is very high?
