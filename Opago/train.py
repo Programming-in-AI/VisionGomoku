@@ -31,9 +31,9 @@ net = SimpleNet()
 epoch = 30
 learning_rate = 0.001
 loss_function = torch.nn.CrossEntropyLoss().to(device)
-# optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate, betas=(0.5, 0.99), weight_decay=0.1)
+optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate )
 # optimizer = torch.optim.Adagrad(net.parameters(), lr=learning_rate, weight_decay=0.1)
-optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate, weight_decay=0.1)
+# optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate, weight_decay=0.1)
 
 
 # train

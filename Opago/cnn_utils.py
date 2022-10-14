@@ -24,7 +24,7 @@ def train_net(net, traindata, test_loader, optimizer, epoch, device, loss_fn):
             data = x.to(device)
             label = y.to(device)  # label.size = (batch_size, 1, 15, 15)
 
-            h = net(data)  # h.size = (batch_size, 1, 15, 15) throughout a sigmoid =>
+            h = net(data)  # h.size = (batch_size, 1, 225) throughout a sigmoid =>
             loss = loss_fn(h, label)
             optimizer.zero_grad()
             loss.backward()
@@ -44,7 +44,7 @@ def train_net(net, traindata, test_loader, optimizer, epoch, device, loss_fn):
            #  print('label len:',len(label))
            #  # print('y_pred[0] len:',len(y_pred[0]))
            #  print('label[0] len:',len(label[0]))
-            n_acc += (label == h).float().sum().item()  # 같으면 1 틀리면 0 다 합쳤을때
+            n_acc += ( torch.argmax(label, dim=1) == torch.argmax(h, dim=1) ).sum().item()  # batch_size 만큼
         train_losses.append(running_loss / i)
 
         # train_dataset acc
