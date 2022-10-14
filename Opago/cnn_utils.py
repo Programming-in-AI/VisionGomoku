@@ -48,7 +48,7 @@ def train_net(net, traindata, test_loader, optimizer, epoch, device, loss_fn):
         train_losses.append(running_loss / i)
 
         # train_dataset acc
-        train_acc.append(n_acc / (total * data.size(2) * data.size(3)))  # 퍼센트
+        train_acc.append(n_acc / total )  # 퍼센트
 
         # valid_dataset acc
         val_acc.append(eval_net(net, test_loader, device))
@@ -75,12 +75,12 @@ def eval_net(net, data_loader, device):
         y = y.to(device)
 
         with torch.no_grad():
-            y_pred = net(x)  # net(x).size = (batch_size, 1, 15, 15)
+            y_pred = net(x)  # net(x).size = (batch_size, 255)
         batch_size = x.size(0)
         total += batch_size
-        n_acc += (y_pred == y).float().sum().item() # 같으면 1 틀리면 0 다 합쳤을때
+        n_acc += (torch.argmax(y_pred, dim=1) == torch.argmax(y, dim=1)).sum().item() # 같으면 1 틀리면 0 다 합쳤을때
 
-    acc = n_acc/ (total * x.size(2) * x.size(3))
+    acc = n_acc/ total
 
     return acc
 
