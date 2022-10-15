@@ -64,11 +64,11 @@ class Omok(object):
                     menu.terminate()
                     pygame.quit()
 
-                # black plays as an AI
-                elif omok.turn == black_stone and not omok.is_gameover:
-                    best_move = ai.get_best_move()
-                    ai.make_move(best_move)
-                    omok.turn = white_stone
+                # black plays as a minimax agent
+                if omok.turn == black_stone and not omok.is_gameover:
+                    # get the best move
+                    move = ai.calculate_next_move()
+                    omok.check_board(move)
 
                 elif event.type == pygame.MOUSEBUTTONUP:  # mouse clicked
                     print(f'coord: {event.pos}')
