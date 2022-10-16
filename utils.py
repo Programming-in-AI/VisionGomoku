@@ -41,6 +41,7 @@ class Omok(object):
         self.is_show = True
         self.black_win_time = 0
         self.white_win_time = 0
+        self.num_moves = 0
 
 
     def init_game(self):
@@ -57,23 +58,31 @@ class Omok(object):
     def run_game(omok, menu):
         omok.init_game()
         # Initialize AI
-        ai = minimax.Minimax(omok, omok.board, 5)
+        ai = minimax.Minimax(omok, omok.board, 2)
+        print("AI initialized")
         while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT: # close window
-                    menu.terminate()
-                    pygame.quit()
-
-                # black plays as a minimax agent
-                if omok.turn == black_stone and not omok.is_gameover:
-                    # get the best move
+            # black plays as a minimax agent
+            if omok.turn == black_stone and not omok.is_gameover:
+                # get the best move
+                print("AI is thinking...")
+                if omok.num_moves == 0:
+                    move = (7, 7)
+                else:
                     move = ai.calculate_next_move()
-                    omok.check_board(move)
+                print(move)
+                omok.num_moves += 1
+                if not omok.check_board(move):
+                    omok.init_game()
+            else:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT: # close window
+                        menu.terminate()
+                        pygame.quit()              
 
-                elif event.type == pygame.MOUSEBUTTONUP:  # mouse clicked
-                    print(f'coord: {event.pos}')
-                    if not omok.check_board(event.pos): # 1. did it click board? 2. check that the game is over or not
-                        omok.init_game()  # if anybody wins, initialize game
+                    elif omok.turn == white_stone and event.type == pygame.MOUSEBUTTONUP:  # mouse clicked
+                        print(f'coord: {event.pos}')
+                        if not omok.check_board(event.pos): # 1. did it click board? 2. check that the game is over or not
+                            omok.init_game()  # if anybody wins, initialize game
 
             if omok.is_gameover:  # if game is over break while loop
                 break
