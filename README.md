@@ -28,19 +28,21 @@
 ``` 
 # Project Description
 - Making Opago(오목 모델, Gomoku AI model) AI with pygame module in python.   
-- cnn method are used
+- cnn method is used
 - model structure is very simple and hyperparameter are already tuned 
 ## Dataset
 - Dataset from https://gomocup.org/results/
-- input is the image in the middle of the game
+- input are some image in the middle of the game
 - output is the image that is the next step of the input image
-- we can get dozens of data from just an one game
+- we can get dozens of data from just one game
+- there is a tremendous data in website, which is organized by year
+- this project uses 2021, 2020, 2019 game data
 
 ## Files Description
 ### pre_dataset
 + coordinate information which is from website which is described in upside
 + Renju is one of the name which means a way playing Gomoku with specific rules(actually most popular)
-#### create_dataset.py & dataset
+### create_dataset.py & dataset
 + change coordinate information to numpy 15 * 15 array and save it as npz files in dataset folder for making the input in the cnn network
 ### dataloader.py & cnn_utils.py & SimpleNet.py & train.py
 - train Opago AI model in cnn method.
@@ -58,3 +60,12 @@
 - If the whole game is over, then quit a game
 ### making_board.ipynb
 - making a board image with a cv2 and PIL module
+
+## Game Specification
+1. use 15*15 board
+2. randomly divide black and white side
+3. the starter is always black
+4. the starter which is black must put the stone on a middle of the board
+5. if anyside win twice, the whole game is over.
+6. samsam which is the strategy that black cannot use is not implemented yet
+
