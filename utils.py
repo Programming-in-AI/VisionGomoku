@@ -44,10 +44,10 @@ class Omok(object):
         self.is_show = True
         self.computer_win_time = 0
         self.human_win_time = 0
-
+        self.quit = False
 
     def init_game(self):
-        self.turn  = black_stone
+        self.turn = black_stone
         self.draw_board()
         self.menu.show_msg(empty)
         self.init_board()
@@ -59,24 +59,21 @@ class Omok(object):
         self.list = ['human', 'computer']
         self.who_is_black = random.choice(self.list)  # 1 = human, 2 = computer / black means first also
 
-
     def run_game(self, omok, menu):
-
-
         omok.init_game()
         while True:
             # default action
-            if self.who_is_black == 'computer' and self.start:
+            if self.who_is_black == 'computer' and self.start:  # is it first time?
                 omok.check_board((237, 237), self.who_is_black, computer_input = None)
                 self.start = False
 
             # computer action
             if (self.turn  == black_stone and self.who_is_black == 'computer') or (self.turn  == white_stone and self.who_is_black == 'human'):
-                # 현재 보드 값을 대입하고 x,y 좌표 구해낸다
+                # using AI model
                 path = './Opago/models/model_27.pth'
                 net = SimpleNet()
                 model = torch.load(path)
-                net.load_state_dict(model)
+                net.load_state_dict(model, strict=False)
                 with torch.no_grad():
                     net.eval()
                 result = net(torch.unsqueeze(torch.from_numpy(np.array(self.board)).float(), 0))
@@ -87,12 +84,12 @@ class Omok(object):
             # human action
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: # close window
-                    menu.terminate()
                     pygame.quit()
-
+                    self.quit = True
+                    return
                 elif event.type == pygame.MOUSEBUTTONUP:  # mouse clicked
-                    print(f'coord: {event.pos}')
-                    if not omok.check_board(event.pos, self.who_is_black, computer_input = None): # 1. did it click board? 2. check that the game is over or not
+                    # print(f'coord: {event.pos}')
+                    if not omok.check_board(event.pos, self.who_is_black, computer_input = None):  # 1. did it click board? 2. check that the game is over or not
                         omok.init_game()  # if anybody wins, initialize game
 
             pygame.display.update()
@@ -100,8 +97,6 @@ class Omok(object):
 
             if omok.is_gameover:  # if game is over break while loop
                 return
-
-
 
     def set_image_font(self):
         white_img = pygame.image.load('./image/white.png')
@@ -123,7 +118,7 @@ class Omok(object):
         img = [self.black_img, self.white_img]
         self.surface.blit(img[img_index], (x-grid_size/2, y-grid_size/2))
 
-    def hide_numbers(self):
+    def drawing_img(self):
         for i in range(len(self.coords)):
             x, y = self.coords[i]
             self.draw_image(i % 2, x, y)
@@ -155,6 +150,7 @@ class Omok(object):
             if not coord: # but if clicked strange spot
                 return False
             x, y = self.get_point(coord)
+
         if pos == None: # click does not happen & computer is gonna action
             coord = (computer_input[1]*grid_size+25, computer_input[0]*grid_size+25)
             x, y = self.get_point(coord)
@@ -177,7 +173,7 @@ class Omok(object):
         elif 5 <= self.rule.is_gameover(x, y, turn, who_is_black):  # checking how many times win
             if (turn == black_stone and who_is_black == 'computer') or (turn == white_stone and who_is_black == 'human'):  # black
                 self.computer_win_time += 1
-            elif (turn == white_stone and who_is_black == 'computer') or (turn == black_stone and who_is_black == 'human'):   # white
+            elif (turn == white_stone and who_is_black == 'computer') or (turn == black_stone and who_is_black == 'human'):  # white
                 self.human_win_time += 1
             self.show_winner_msg(turn)
             return True
@@ -200,11 +196,11 @@ class Omok(object):
 
     def draw_stone(self, coord, stone, increase, who_is_black):
 
-        if stone == 1 and who_is_black == 'computer': # computer is black(1) and it is black's turn
+        if stone == 1 and who_is_black == 'computer':  # computer is black(1) and it is black's turn
             x, y = self.get_point(coord)
             self.board[y][x] = 1
 
-        elif stone == 2 and who_is_black == 'computer': # computer is black(1) and it is white's turn
+        elif stone == 2 and who_is_black == 'computer':  # computer is black(1) and it is white's turn
             x, y = self.get_point(coord)
             self.board[y][x] = -1
 
@@ -216,7 +212,7 @@ class Omok(object):
             x, y = self.get_point(coord)
             self.board[y][x] = 1
 
-        self.hide_numbers()
+        self.drawing_img()
         self.id += increase
         self.turn = 3 - self.turn
 

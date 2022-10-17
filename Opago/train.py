@@ -14,8 +14,6 @@ elif platform.system() == 'Windows':
 
 print("Device: {}".format(device))
 
-
-
 # data load
 data_path = os.getcwd()+'/dataset/'
 x_train, x_val, y_train, y_val = Dataloader(data_path)
@@ -35,9 +33,9 @@ optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate )
 # optimizer = torch.optim.Adagrad(net.parameters(), lr=learning_rate, weight_decay=0.1)
 # optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate, weight_decay=0.1)
 
-
 # train
 net = net.to(device)
 loss_list = []
+
 # model summary
 train_losses, train_acc, val_acc = train_net(net, train_loader, valid_loader, optimizer, epoch, device, loss_function)

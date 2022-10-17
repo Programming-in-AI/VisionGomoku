@@ -4,10 +4,10 @@ import Menu
 
 if __name__ == '__main__':
 
-    # TODO 0 : let computer play game, who play black, white is totally random. [yet]
+    # TODO 0 : let computer play game, who play black, white is totally random. [done]
     # TODO 1 : whoever start, black first. [done]
-    # TODO 2 : black should start from center. [yet]
-    # TODO 3 : white randomly chooses the spot which is empty. [yet]
+    # TODO 2 : black should start from center. [done]
+    # TODO 3 : white randomly chooses the spot which is empty. [done]
     # TODO 4 : balck's third stone must be out of center area 5x5. [yet]
     ##
     # TODO 5 : must play by taking turn. [done]
@@ -24,10 +24,15 @@ if __name__ == '__main__':
     omok = utils.Omok(surface)
     menu = Menu.Menu(surface)
 
+    print('[Game start!]')
     # run game
     while True:
         omok.run_game(omok, menu)
-        if menu.game_over(omok):  # if anyside win twice quit the window
+        # if x button clicked then break
+        if omok.quit:
+            break
+        # if anyside win twice quit the window
+        if menu.game_over(omok):
             pygame.quit()
             break
 

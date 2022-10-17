@@ -1,5 +1,6 @@
 import torch.nn as nn
 
+
 class SimpleNet(nn.Module):
     def __init__(self):
         super(SimpleNet, self).__init__()
@@ -14,7 +15,6 @@ class SimpleNet(nn.Module):
         self.sg = nn.Sigmoid()
         self.relu = nn.ReLU()
         self.dropout = nn.Dropout(0.2)
-        self.Ln = nn.Linear(256, 225)
 
     def forward(self, x):
         # x = x  # batch_size x 1 x 15 x 15

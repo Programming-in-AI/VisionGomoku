@@ -7,7 +7,7 @@ from tqdm import tqdm
 Dataset from https://gomocup.org/results/
 '''
 
-game_rule = 'Renju' # Freestyle, Fastgame, Standard, Renju
+game_rule = 'Renju' # Freestyle, Fastgame, Standard, Renju : rule name
 base_path = os.getcwd()
 data_path = os.path.join(os.getcwd() , 'pre_dataset')
 output_path = os.path.join(base_path, 'dataset')
@@ -20,7 +20,6 @@ file_list=[]
 for tmp in (folder_list):
     tmp = os.path.join(data_path, tmp)
     file_list.extend(glob(os.path.join(tmp, '*.psq')))
-
 
 
 for index, file_path in enumerate(tqdm(file_list)):
@@ -57,7 +56,7 @@ for index, file_path in enumerate(tqdm(file_list)):
         output[y-1, x-1] = 1
 
         # augmentation
-        # rotate 4 x flip 2 = 8
+        # rotate 4 x flip 4 / 2(overlap) = 8
         for k in range(4):
             input_rot = np.rot90(input, k=k)
             output_rot = np.rot90(output, k=k)
@@ -67,7 +66,6 @@ for index, file_path in enumerate(tqdm(file_list)):
 
             inputs.append(np.fliplr(input_rot))
             outputs.append(np.fliplr(output_rot))
-
 
         # update board
         board[y-1, x-1] = player

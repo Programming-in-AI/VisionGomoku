@@ -5,6 +5,8 @@ import os
 from tqdm import tqdm
 import torch.utils.data as data
 import torch
+
+
 def Dataloader(data_path):
     w, h = 15, 15
     base_path = os.path.join(data_path, '*.npz')
@@ -19,7 +21,6 @@ def Dataloader(data_path):
     x_data = np.array(x_data, np.float32).reshape((-1, h, w, 1))
     y_data = np.array(y_data, np.float32).reshape((-1, h * w))
 
-
     x_train, x_val, y_train, y_val = train_test_split(x_data, y_data, test_size=0.2, random_state=2020)
     x_train = torch.from_numpy(x_train).float().permute(0, 3, 1, 2)
     x_val = torch.from_numpy(x_val).float().permute(0, 3, 1, 2)
@@ -27,9 +28,6 @@ def Dataloader(data_path):
     y_val = torch.from_numpy(y_val).float()
 
     del x_data, y_data
-
-    # print('x_train_shape: ', x_train.shape, 'y_train_shape: ', y_train.shape)
-    # print('x_val shape: ', x_val.shape, 'y_val shape: ', y_val.shape)
 
     return x_train, x_val, y_train, y_val
 
