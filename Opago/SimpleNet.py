@@ -10,7 +10,7 @@ class SimpleNet(nn.Module):
         self.conv3 = nn.Conv2d(128, 256, 7, padding='same')
         self.conv4 = nn.Conv2d(256, 128, 7, padding='same')
         self.conv5 = nn.Conv2d(128, 64, 7, padding='same')
-        self.conv6 = nn.Conv2d(64, 1, 1, padding='same')
+        self.conv6 = nn.Conv2d(64, 1, 7, padding='same')
         self.sg = nn.Sigmoid()
         self.relu = nn.ReLU()
         self.dropout = nn.Dropout(0.2)
