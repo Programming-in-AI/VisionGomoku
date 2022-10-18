@@ -67,6 +67,7 @@ class Omok(object):
                 omok.check_board((237, 237), self.who_is_black, computer_input = None)
                 self.start = False
 
+
             # computer action
             if (self.turn  == black_stone and self.who_is_black == 'computer') or (self.turn  == white_stone and self.who_is_black == 'human'):
                 # using AI model
@@ -145,21 +146,36 @@ class Omok(object):
         return x, y
 
     def check_board(self, pos, who_is_black, computer_input):
-        if pos is not None: # clicked somewhere
+        # human action
+        if pos is not None:
             coord = self.get_coord(pos)
             if not coord: # but if clicked strange spot
                 return False
             x, y = self.get_point(coord)
 
-        if pos == None: # click does not happen & computer is gonna action
+            # special rule
+            if self.id == 3 and self.is_3rd_black_in_middle(x, y, 'human'):  # nullity the action
+                return True
+
+        # computer action
+        if pos == None:
             coord = (computer_input[1]*grid_size+25, computer_input[0]*grid_size+25)
             x, y = self.get_point(coord)
 
-        if self.board[y][x] != empty:  # stone already exists => return True
+            # special rule
+            if self.id == 3:
+                x,y = self.is_3rd_black_in_middle(x, y, 'computer')
+                coord = (x * grid_size + 25, y * grid_size + 25)
+
+        # update board information
+        if self.board[y][x] != empty:
             return True
         self.coords.append(coord)
 
+        # draw stone
         self.draw_stone(coord, self.turn, 1, who_is_black)
+
+        # check whether game is over
         if self.check_gameover(coord, 3 - self.turn, who_is_black):
             self.is_gameover = True
 
@@ -215,4 +231,18 @@ class Omok(object):
         self.drawing_img()
         self.id += increase
         self.turn = 3 - self.turn
+
+    def is_3rd_black_in_middle(self, x, y, turn):
+        if turn == 'computer':
+            if 5<=x<=9 and 5<=y<=9: # nullity the stone
+
+                while not (x in [4,10]) and  not (y in [4,10]): # let computer place a stone at the nearest stone
+                    x = random.choice([4,5,6,7,8,9,10])
+                    y = random.choice([4,5,6,7,8,9,10])
+                print(x,y)
+                return x, y
+        elif turn == 'human':
+            if 5<=x<=9 and 5<=y<=9: # nullity the stone
+                return True
+
 
