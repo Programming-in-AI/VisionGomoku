@@ -38,6 +38,10 @@
 - there is a tremendous data in website, which is organized by year
 - this project uses 2021, 2020, 2019 game data
 
+## pre requisite
+- python 3.9 
+- pytorch 1.12 
+
 ## Files Description
 ### pre_dataset
 + coordinate information which is from website which is described in upside
