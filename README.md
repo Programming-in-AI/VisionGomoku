@@ -26,10 +26,18 @@
 │   └── white.png
 ├── making_board.ipynb
 ``` 
+
+# pre requisite
+- **`python 3.9`**
+- **`pytorch 1.12`**
+
+
 # Project Description
 - Making Opago(오목 모델, Gomoku AI model) AI with pygame module in python.   
 - cnn method is used
 - model structure is very simple and hyperparameter are already tuned 
+
+
 ## Dataset
 - Dataset from https://gomocup.org/results/
 - input are some image in the middle of the game
@@ -37,10 +45,6 @@
 - we can get dozens of data from just one game
 - there is a tremendous data in website, which is organized by year
 - this project uses 2021, 2020, 2019 game data
-
-## pre requisite
-- python 3.9 
-- pytorch 1.12 
 
 ## Files Description
 ### pre_dataset
