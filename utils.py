@@ -1,6 +1,10 @@
 import pygame
 import Menu
 import Rule
+import random
+from Opago.SimpleNet import *
+import torch
+import numpy as np
 
 # default value
 window_width = 470
@@ -38,47 +42,68 @@ class Omok(object):
         self.set_coords()
         self.set_image_font()
         self.is_show = True
-        self.black_win_time = 0
-        self.white_win_time = 0
-
+        self.computer_win_time = 0
+        self.human_win_time = 0
+        self.quit = False
 
     def init_game(self):
-        self.turn  = black_stone
+        self.turn = black_stone
         self.draw_board()
         self.menu.show_msg(empty)
         self.init_board()
         self.coords = []
-        self.redos = []
         self.id = 1
         self.is_gameover = False
+        self.start = True
+        # randomly select who is black
+        self.list = ['human', 'computer']
+        self.who_is_black = random.choice(self.list)  # 1 = human, 2 = computer / black means first also
 
-    @staticmethod
-    def run_game(omok, menu):
+    def run_game(self, omok, menu):
         omok.init_game()
         while True:
+            # default action
+            if self.who_is_black == 'computer' and self.start:  # is it first time?
+                omok.check_board((237, 237), self.who_is_black, computer_input = None)
+                self.start = False
+
+
+            # computer action
+            if (self.turn  == black_stone and self.who_is_black == 'computer') or (self.turn  == white_stone and self.who_is_black == 'human'):
+                # using AI model
+                path = './Opago/models/model_27.pth'
+                net = SimpleNet()
+                model = torch.load(path)
+                net.load_state_dict(model, strict=False)
+                with torch.no_grad():
+                    net.eval()
+                result = net(torch.unsqueeze(torch.from_numpy(np.array(self.board)).float(), 0))
+                computer_input= np.unravel_index(torch.argmax(result[0]), (15, 15))
+
+                omok.check_board(None, self.who_is_black, computer_input)
+
+            # human action
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: # close window
-                    menu.terminate()
                     pygame.quit()
-
+                    self.quit = True
+                    return
                 elif event.type == pygame.MOUSEBUTTONUP:  # mouse clicked
-                    print(f'coord: {event.pos}')
-                    if not omok.check_board(event.pos): # 1. did it click board? 2. check that the game is over or not
+                    # print(f'coord: {event.pos}')
+                    if not omok.check_board(event.pos, self.who_is_black, computer_input = None):  # 1. did it click board? 2. check that the game is over or not
                         omok.init_game()  # if anybody wins, initialize game
-
-            if omok.is_gameover:  # if game is over break while loop
-                break
 
             pygame.display.update()
             fps_clock.tick(fps)
+
+            if omok.is_gameover:  # if game is over break while loop
+                return
 
     def set_image_font(self):
         white_img = pygame.image.load('./image/white.png')
         self.white_img = pygame.transform.scale(white_img, (grid_size, grid_size))
         black_img = pygame.image.load('./image/black.png')
         self.black_img = pygame.transform.scale(black_img, (grid_size, grid_size))
-        # self.last_w_img = pygame.image.load('./image/white_last.png')
-        # self.last_b_img = pygame.image.load('./image/black_last.png')
         self.board_img = pygame.image.load('./image/table.jpg')
         self.font = pygame.font.Font("freesansbold.ttf", 14)
 
@@ -94,27 +119,10 @@ class Omok(object):
         img = [self.black_img, self.white_img]
         self.surface.blit(img[img_index], (x-grid_size/2, y-grid_size/2))
 
-    def show_number(self, x, y, stone, number):
-        colors = [white, black, red, red]
-        color = colors[stone]
-        self.make_text(self.font, str(number), color, x + 15, y + 15, 'center')
-
-    def hide_numbers(self):
+    def drawing_img(self):
         for i in range(len(self.coords)):
             x, y = self.coords[i]
             self.draw_image(i % 2, x, y)
-        # if self.coords:
-        #     x, y = self.coords[-1]
-        #     self.draw_image(i % 2 + 2, x, y)
-
-    def show_numbers(self):
-        for i in range(len(self.coords)):
-            x, y = self.coords[i]
-            self.show_number(x, y, i % 2, i + 1)
-        if self.coords:
-            x, y = self.coords[-1]
-            self.draw_image(i % 2, x, y)
-            self.show_number(x, y, i % 2 + 2, i + 1)
 
     def set_coords(self):
         for y in range(board_size):
@@ -124,9 +132,9 @@ class Omok(object):
     def get_coord(self, pos):
         for coord in self.pixel_coords:
             x, y = coord
-            e = 10 # error value (becuz board is made by hands we need to compensate the pixel value)
+            e = 10 # error value (becuz board is made by the hand, we need to compensate the pixel value)
             rect = pygame.Rect(x-e, y-e, grid_size, grid_size)
-            if rect.collidepoint(pos):
+            if rect.collidepoint(pos):  # if included in the rectangular then return coord
                 return coord
         return None
 
@@ -137,52 +145,104 @@ class Omok(object):
         y = (y - 25) // grid_size
         return x, y
 
-    def check_board(self, pos):
-        coord = self.get_coord(pos)
-        if not coord:
-            return False
-        x, y = self.get_point(coord)
-        if self.board[y][x] != empty: # stone already exists => return True
-            return True
+    def check_board(self, pos, who_is_black, computer_input):
+        # human action
+        if pos is not None:
+            coord = self.get_coord(pos)
+            if not coord: # but if clicked strange spot
+                return False
+            x, y = self.get_point(coord)
 
+            # special rule
+            if self.id == 3 and self.is_3rd_black_in_middle(x, y, 'human'):  # nullity the action
+                return True
+
+        # computer action
+        if pos == None:
+            coord = (computer_input[1]*grid_size+25, computer_input[0]*grid_size+25)
+            x, y = self.get_point(coord)
+
+            # special rule
+            if self.id == 3:
+                x,y = self.is_3rd_black_in_middle(x, y, 'computer')
+                coord = (x * grid_size + 25, y * grid_size + 25)
+
+        # update board information
+        if self.board[y][x] != empty:
+            return True
         self.coords.append(coord)
-        self.draw_stone(coord, self.turn, 1)
-        if self.check_gameover(coord, 3 - self.turn):
+
+        # draw stone
+        self.draw_stone(coord, self.turn, 1, who_is_black)
+
+        # check whether game is over
+        if self.check_gameover(coord, 3 - self.turn, who_is_black):
             self.is_gameover = True
 
         return True
 
-    def check_gameover(self, coord, stone):
+    def check_gameover(self, coord, turn, who_is_black):
         x, y = self.get_point(coord)
         if self.id > board_size * board_size:
-            self.show_winner_msg(stone)
+            self.show_winner_msg(turn)
             return True
-        elif 5 <= self.rule.is_gameover(x, y, stone):  # checking how many times win
-            if stone == 1:  # black
-                self.black_win_time += 1
-            else:  # white
-                self.white_win_time += 1
-            self.show_winner_msg(stone)
+        elif 5 <= self.rule.is_gameover(x, y, turn, who_is_black):  # checking how many times win
+            if (turn == black_stone and who_is_black == 'computer') or (turn == white_stone and who_is_black == 'human'):  # black
+                self.computer_win_time += 1
+            elif (turn == white_stone and who_is_black == 'computer') or (turn == black_stone and who_is_black == 'human'):  # white
+                self.human_win_time += 1
+            self.show_winner_msg(turn)
             return True
         return False
 
     def show_winner_msg(self, stone):
-        if self.black_win_time < 2 and self.white_win_time < 2:
-            self.menu.show_msg(stone)
+        if self.computer_win_time < 2 and self.human_win_time < 2:
+            self.menu.show_msg(stone, final_victory=None)
             pygame.display.update()
             pygame.time.delay(2000)
         else:
-            self.menu.show_msg(stone, True)
-            pygame.display.update()
-            pygame.time.delay(2000)
+            if self.computer_win_time == 2 :
+                self.menu.show_msg(stone, final_victory='Computer')
+                pygame.display.update()
+                pygame.time.delay(2000)
+            else :
+                self.menu.show_msg(stone, final_victory='You')
+                pygame.display.update()
+                pygame.time.delay(2000)
 
+    def draw_stone(self, coord, stone, increase, who_is_black):
 
+        if stone == 1 and who_is_black == 'computer':  # computer is black(1) and it is black's turn
+            x, y = self.get_point(coord)
+            self.board[y][x] = 1
 
-    def draw_stone(self, coord, stone, increase):
-        x, y = self.get_point(coord)
-        self.board[y][x] = stone
-        self.hide_numbers()
-        #self.show_numbers()
+        elif stone == 2 and who_is_black == 'computer':  # computer is black(1) and it is white's turn
+            x, y = self.get_point(coord)
+            self.board[y][x] = -1
+
+        elif stone == 1 and who_is_black == 'human':  # human is black(-1) and it is black's turn
+            x, y = self.get_point(coord)
+            self.board[y][x] = -1
+
+        elif stone == 2 and who_is_black == 'human':  # human is black(-1) and it is white's turn
+            x, y = self.get_point(coord)
+            self.board[y][x] = 1
+
+        self.drawing_img()
         self.id += increase
         self.turn = 3 - self.turn
+
+    def is_3rd_black_in_middle(self, x, y, turn):
+        if turn == 'computer':
+            if 5<=x<=9 and 5<=y<=9: # nullity the stone
+
+                while not (x in [4,10]) and  not (y in [4,10]): # let computer place a stone at the nearest stone
+                    x = random.choice([4,5,6,7,8,9,10])
+                    y = random.choice([4,5,6,7,8,9,10])
+                print(x,y)
+                return x, y
+        elif turn == 'human':
+            if 5<=x<=9 and 5<=y<=9: # nullity the stone
+                return True
+
 
