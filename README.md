@@ -67,5 +67,7 @@
 3. the starter is always black
 4. the starter which is black must put the stone on a middle of the board
 5. if anyside win twice, the whole game is over.
-6. samsam which is the strategy that black cannot use is not implemented yet
+6. blocking samsam which is the strategy that black cannot use is not implemented yet
+7. the second black stone cannot be placed in 5x5 center area.    
+Because Black should be penaltied at least once for reason that the first stone is always black
 
