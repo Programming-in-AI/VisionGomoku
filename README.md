@@ -80,3 +80,6 @@
 6. Blocking samsam which is the strategy that black cannot use is not implemented yet
 7. The second black stone cannot be placed inside 5x5 center area (since Black should be penalized for being able to place the first stone)
 
+## Reference
+1. Gomoku with Pygame module (https://m.blog.naver.com/dnpc7848/221503651970)
+2. Create dataset for CNN network from coordinate to array  (https://github.com/kairess/omok-ai)
