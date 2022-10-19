@@ -1,4 +1,4 @@
-## CNN-based Gomoku AI
+# CNN-based Gomoku AI
 
 # File Directory
 ```bash
