@@ -40,7 +40,7 @@
 - The model structure is very simple and the hyperparameters are already tuned 
 
 ## Model Description
-![스크린샷 2022-10-20 오전 1 36 41](https://user-images.githubusercontent.com/70640776/196770065-67ead10d-e15d-49a6-b249-ade1a506b002.png)
+![스크린샷 2022-10-20 오전 2 11 17](https://user-images.githubusercontent.com/70640776/196771261-777065cb-7e38-4639-a3b3-b6daccd2d841.png)
 - Input : (batchsize, 1, 15, 15) image 
 - Output : (batchsize, 225) array
 (The place where the next stone should be placed has value 1, and 0 for others 224 values)
@@ -88,6 +88,9 @@
 5. If any player wins twice, the whole game is over
 6. Blocking samsam which is the strategy that black cannot use is not implemented yet
 7. The second black stone cannot be placed inside 5x5 center area (since Black should be penalized for being able to place the first stone)
+
+## Demo Image
+![스크린샷 2022-10-20 오전 12 58 22](https://user-images.githubusercontent.com/70640776/196771287-34422e3d-a19d-4dc0-8a6e-aa7cebe9ff98.png)
 
 ## Reference
 1. Gomoku with Pygame module (https://m.blog.naver.com/dnpc7848/221503651970)
