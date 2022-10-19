@@ -39,6 +39,15 @@
 - A convolutional neural network (CNN) is used
 - The model structure is very simple and the hyperparameters are already tuned 
 
+## Model Description
+(https://user-images.githubusercontent.com/70640776/196770065-67ead10d-e15d-49a6-b249-ade1a506b002.png)
+- Input : (batchsize, 1, 15, 15) image 
+- Output : (batchsize, 225) array
+(The place where the next stone should be placed has value 1, and 0 for others 224 values)
+
+- Sigmoid function is used only at the last layer to get the biggest value among 255 values
+- The reason why sigmoid function is used is because to make every value to between 0 to 1 and it is ideal that letting the target index's value be close to 1 through training
+- The index with the biggest value means the place where the next stone should be placed
 
 ## Dataset
 - The dataset is from https://gomocup.org/results/
