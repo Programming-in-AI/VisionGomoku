@@ -40,7 +40,7 @@
 - The model structure is very simple and the hyperparameters are already tuned 
 
 ## Model Description
-(https://user-images.githubusercontent.com/70640776/196770065-67ead10d-e15d-49a6-b249-ade1a506b002.png)
+![스크린샷 2022-10-20 오전 1 36 41](https://user-images.githubusercontent.com/70640776/196770065-67ead10d-e15d-49a6-b249-ade1a506b002.png)
 - Input : (batchsize, 1, 15, 15) image 
 - Output : (batchsize, 225) array
 (The place where the next stone should be placed has value 1, and 0 for others 224 values)
