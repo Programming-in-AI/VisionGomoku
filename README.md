@@ -53,7 +53,11 @@
 + Coordinate information from the website above
 + Renju is one of the names that refer to a way of playing Gomoku with specific rules (which are also the most popular)
 ### create_dataset.py & dataset
+<<<<<<< HEAD
 + Change coordinate information to numpy 15 * 15 arrays and save them as `.npz` files in the dataset folder in order to be used as input to the CNN network
+=======
++ Change coordinate information to numpy 15 * 15 arrays and save them as `.npy` files in the dataset folder in order to be used as input to the CNN network
+>>>>>>> c907f7684d8a8038703353c6f489443b7cda73bf
 ### dataloader.py & cnn_utils.py & SimpleNet.py & train.py
 - Train Opago AI model using the CNN method.
 - The input size is `(batchsize, 1, 15, 15)`, the output size is `(batchsize, 255)` 
