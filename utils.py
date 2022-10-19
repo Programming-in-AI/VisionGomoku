@@ -77,9 +77,8 @@ class Omok(object):
                 net.load_state_dict(model, strict=False)
                 with torch.no_grad():
                     net.eval()
-                result = net(torch.unsqueeze(torch.from_numpy(np.array(self.board)).float(), 0))
+                result = net(torch.unsqueeze(torch.unsqueeze(torch.from_numpy(np.array(self.board)).float(), 0),0))
                 computer_input= np.unravel_index(torch.argmax(result[0]), (15, 15))
-
                 omok.check_board(None, self.who_is_black, computer_input)
 
             # human action
@@ -241,6 +240,7 @@ class Omok(object):
                     y = random.choice([4,5,6,7,8,9,10])
                 print(x,y)
                 return x, y
+            else : return x, y
         elif turn == 'human':
             if 5<=x<=9 and 5<=y<=9: # nullity the stone
                 return True
