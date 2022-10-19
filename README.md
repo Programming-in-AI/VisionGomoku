@@ -44,6 +44,11 @@
 - Input : (batchsize, 1, 15, 15) image 
 - Output : (batchsize, 225) array
 (The place where the next stone should be placed has value 1, and 0 for others 224 values)
+```python
+# see what output looks like
+print(torch.reshape(output[0].int(),(15,15)))
+```
+![스크린샷 2022-10-20 오전 2 20 12](https://user-images.githubusercontent.com/70640776/196772962-fb365594-58e7-4f7c-a602-4a5caecdc4e5.png)
 
 - Sigmoid function is used only at the last layer to get the biggest value among 255 values
 - The reason why sigmoid function is used is because to make every value to between 0 to 1 and it is ideal that letting the target index's value be close to 1 through training
