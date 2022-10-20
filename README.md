@@ -57,7 +57,7 @@ print(torch.reshape(output[0].int(),(15,15)))
 ## Dataset
 - The dataset is from https://gomocup.org/results/
 - Input: an image from during a play
-- Output: an image that instructs the next step of the input image
+- Output: 255 size array, set value 1 at the place where the next stone is placed after the input image and value 0 for others
 - We can get a lot of data from just one game
 - There is tremendous data available on that aforementioned website, which is organized by year
 - This project itself uses game data from the years 2021, 2020 and 2019
