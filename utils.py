@@ -230,7 +230,11 @@ class Omok(object):
         self.drawing_img()
         self.id += increase
         self.turn = 3 - self.turn
-        print('coord：', tuple(int((elem-25)/30) for elem in coord))
+
+        # print coordinate
+        print_coord = list(int((elem-25)/30) for elem in coord)
+        print_coord[1]=14-print_coord[1]
+        print('coord：', print_coord)
 
     def is_3rd_black_in_middle(self, x, y, turn):
         if turn == 'computer':
