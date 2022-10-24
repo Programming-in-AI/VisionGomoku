@@ -230,6 +230,7 @@ class Omok(object):
         self.drawing_img()
         self.id += increase
         self.turn = 3 - self.turn
+        print('coord：', tuple(int((elem-25)/30) for elem in coord))
 
     def is_3rd_black_in_middle(self, x, y, turn):
         if turn == 'computer':
@@ -238,7 +239,7 @@ class Omok(object):
                 while not (x in [4,10]) and  not (y in [4,10]): # let computer place a stone at the nearest stone
                     x = random.choice([4,5,6,7,8,9,10])
                     y = random.choice([4,5,6,7,8,9,10])
-                print(x,y)
+
                 return x, y
             else : return x, y
         elif turn == 'human':
