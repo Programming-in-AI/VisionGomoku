@@ -234,7 +234,10 @@ class Omok(object):
         # print coordinate
         print_coord = list(int((elem-25)/30) for elem in coord)
         print_coord[1]=14-print_coord[1]
-        print('coord：', print_coord)
+        if stone == 1 :
+            print('black coord：', print_coord)
+        else:
+            print('white coord：', print_coord)
 
     def is_3rd_black_in_middle(self, x, y, turn):
         if turn == 'computer':
